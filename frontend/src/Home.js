@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import './Home.css'; // Import CSS file
 
 // Styled components
 const Container = styled.div`
