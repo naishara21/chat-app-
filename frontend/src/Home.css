@@ -1,89 +1,163 @@
-/* Home.css */
-
-/* Container styles */
-.Container {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-/* Navigation styles */
-.Nav {
-  background-color: #67c462;
-  color: #fff;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.Title {
-  text-decoration: none;
-  color: #fff;
-  font-size: 30px;
-  padding: 2px 8px;
-  border-radius: 15px;
-  font-family: Segoe UI;
-}
-
-.Menu {
-  list-style: none;
-  display: flex;
-}
-
-.MenuItem {
-  margin-right: 20px;
-}
-
-.Dropdown {
+.dropdown {
   position: relative;
+  display: inline-block;
 }
 
-.DropdownContent {
+.dropdown-content {
   display: none;
   position: absolute;
-  background-color: #67c462;
+  background-color: #67C462;
   min-width: 160px;
   z-index: 1;
 }
 
-.DropdownToggle {
-  text-decoration: none;
-  color: #fff;
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-family: Segoe UI;
-  cursor: pointer;
-}
-
-.DropdownToggle:hover + .DropdownContent {
+.dropdown:hover .dropdown-content {
   display: block;
 }
 
-/* Add this CSS to expand the first column of AboutContainer to full width */
-.AboutContainer {
-  display: flex;
-  justify-content: space-between;
-  height: 100vh; /* Set height to 100% of viewport height */
+.header h1 {
+  color: #3f3d3d;
+  font-size: 46px;
+  text-align: center;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.AboutColumn {
-  flex: 1; /* Expand the first column to fill available space */
-  background-color: #67c462;
-  border: 1px solid #67c462;
+.dropdown-content a {
+  color: #fff;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  width: 350px;
+  height: 150px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #67C462;
+  color: #fff;
+  padding: 10px 20px;
+  font-family: Segoe UI;
+}
+
+.left-align {
+  margin-right: auto;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+li {
+  margin-right: 100px;
+  text-align: left;
+}
+
+#search-button {
+  background-color: #3da037;
+  border: none;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#search-button:hover {
+  background-color: rgb(10, 66, 7);
+}
+
+img {
+  width: 100%;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  background-color: rgb(182, 230, 178);
+  padding: 20px 25px;
+  border-radius: 5px;
+  color: rgb(18, 87, 14);
+}
+
+.header {
+  bottom: 250px;
+  left: 475px;
+  color: rgb(18, 87, 14);
+}
+
+body {
+  background-image: url('o.png');
+}
+
+.right-align {
+  float: right;
+  margin-left: 10px;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.about {
+  gap: 20px;
+  padding: 20px;
+}
+
+.column {
+  background-color: #67C462;
+  border: 1px solid #67C462;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 0px 5px rgb(33, 58, 33);
-  color: #f6f4eb;
+  color: #F6F4EB;
   font-size: 17px;
 }
 
-
-.AboutTitle {
-  font-family: Montserrat;
+img {
+  max-width: 100%;
+  height: auto;
 }
 
-.AboutParagraph {
-  font-family: Garmond;
+.parallax-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
 }
+
+.parallax-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background-image: url('bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -1;
+  animation: parallaxScroll 10s infinite linear;
+}
+
