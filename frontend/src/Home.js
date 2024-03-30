@@ -10,22 +10,20 @@ function Home() {
           <li className="MenuItem">
             <a href="Home">Home</a>
           </li>
-           <li className="MenuItem">
+          <li className="MenuItem">
             <a href="/frontend\src\App.js">Chat</a>
           </li>
-     <li className="MenuItem">
+          <li className="MenuItem">
             <a href="#">Information</a>
           </li>
-     <li className="MenuItem">
+          <li className="MenuItem">
             <a href="#">Contact</a>
-          </li>
-            </div>
           </li>
         </ul>
       </nav>
       <img src="logo.png" alt="logo" />
       <div className="AboutContainer">
-        <div className="AboutColumn">
+        <div className="AboutColumn FullWidthColumn">
           <h3 className="AboutTitle">About Us: Cultura Lang - Empowering Communities</h3>
           <p className="AboutParagraph">
             Welcome to Cultura Lang, a platform dedicated to fostering connections among students in grades 6th to 10th who share common interests and passions...
@@ -38,4 +36,3 @@ function Home() {
 }
 
 export default Home;
-
