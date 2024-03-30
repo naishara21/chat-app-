@@ -1,0 +1,87 @@
+/* Home.css */
+
+/* Container styles */
+.Container {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navigation styles */
+.Nav {
+  background-color: #67c462;
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Title {
+  text-decoration: none;
+  color: #fff;
+  font-size: 30px;
+  padding: 2px 8px;
+  border-radius: 15px;
+  font-family: Segoe UI;
+}
+
+.Menu {
+  list-style: none;
+  display: flex;
+}
+
+.MenuItem {
+  margin-right: 20px;
+}
+
+.Dropdown {
+  position: relative;
+}
+
+.DropdownContent {
+  display: none;
+  position: absolute;
+  background-color: #67c462;
+  min-width: 160px;
+  z-index: 1;
+}
+
+.DropdownToggle {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-family: Segoe UI;
+  cursor: pointer;
+}
+
+.DropdownToggle:hover + .DropdownContent {
+  display: block;
+}
+
+.AboutContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.AboutColumn {
+  background-color: #67c462;
+  border: 1px solid #67c462;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgb(33, 58, 33);
+  color: #f6f4eb;
+  font-size: 17px;
+}
+
+.AboutTitle {
+  font-family: Montserrat;
+}
+
+.AboutParagraph {
+  font-family: Garmond;
+}
