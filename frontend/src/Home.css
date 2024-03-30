@@ -61,14 +61,15 @@
   display: block;
 }
 
+/* Add this CSS to expand the first column of AboutContainer to full width */
 .AboutContainer {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  height: 100vh; /* Set height to 100% of viewport height */
 }
 
 .AboutColumn {
+  flex: 1; /* Expand the first column to fill available space */
   background-color: #67c462;
   border: 1px solid #67c462;
   padding: 20px;
@@ -77,6 +78,7 @@
   color: #f6f4eb;
   font-size: 17px;
 }
+
 
 .AboutTitle {
   font-family: Montserrat;
