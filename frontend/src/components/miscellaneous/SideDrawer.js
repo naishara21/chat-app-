@@ -128,22 +128,21 @@ function SideDrawer() {
         d="flex"
         justifyContent="space-between"
         alignItems="center"
-        bg="white"
+        bg="#67C462" // Change background color to green
+        color="white" // Change text color to white
         w="100%"
         p="5px 10px 5px 10px"
         borderWidth="5px"
       >
-        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
-            <i className="fas fa-search"></i>
-            <Text d={{ base: "none", md: "flex" }} px={4}>
-              Search User
-            </Text>
-          </Button>
-        </Tooltip>
         <Text fontSize="2xl" fontFamily="Work sans">
           CulturaLang
         </Text>
+        <Button variant="ghost" onClick={onOpen}>
+          <i className="fas fa-search"></i>
+          <Text d={{ base: "none", md: "flex" }} px={4}>
+            Search User
+          </Text>
+        </Button>
         <div>
           <Menu>
             <MenuButton p={1}>
