@@ -19,6 +19,7 @@ import {
 import { Tooltip } from "@chakra-ui/tooltip";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
+import { Link } from "@chakra-ui/react"; // Import Link component from Chakra UI
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
@@ -128,8 +129,8 @@ function SideDrawer() {
         d="flex"
         justifyContent="space-between"
         alignItems="center"
-        bg="#67C462" // Change background color to green
-        color="white" // Change text color to white
+        bg="#67C462"
+        color="white"
         w="100%"
         p="5px 10px 5px 10px"
         borderWidth="5px"
@@ -137,39 +138,21 @@ function SideDrawer() {
         <Text fontSize="2xl" fontFamily="Work sans">
           CulturaLang
         </Text>
+        {/* Add Home, Information, and Contact links */}
+        <Link href="/Home.htm" ml={4} color="white">Home</Link>
+        <Link href="/Information.htm" ml={4} color="white">Information</Link>
+        <Link href="/chat.htm" ml={4} color="white">Chat</Link>
+        <Link href="/Contact.htm" ml={4} color="white">Contact</Link>
         <Button variant="ghost" onClick={onOpen}>
           <i className="fas fa-search"></i>
           <Text d={{ base: "none", md: "flex" }} px={4}>
             Search User
           </Text>
         </Button>
+        {/* Profile Menu */}
         <div>
           <Menu>
-            <MenuButton p={1}>
-              <NotificationBadge
-                count={notification.length}
-                effect={Effect.SCALE}
-              />
-              <BellIcon fontSize="2xl" m={1} />
-            </MenuButton>
-            <MenuList pl={2}>
-              {!notification.length && "No New Messages"}
-              {notification.map((notif) => (
-                <MenuItem
-                  key={notif._id}
-                  onClick={() => {
-                    setSelectedChat(notif.chat);
-                    setNotification(notification.filter((n) => n !== notif));
-                  }}
-                >
-                  {notif.chat.isGroupChat
-                    ? `New Message in ${notif.chat.chatName}`
-                    : `New Message from ${getSender(user, notif.chat.users)}`}
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-          <Menu>
+            {/* Profile Button */}
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
               <Avatar
                 size="sm"
@@ -178,17 +161,20 @@ function SideDrawer() {
                 src={user.pic}
               />
             </MenuButton>
+            {/* Profile Menu List */}
             <MenuList>
               <ProfileModal user={user}>
-                <MenuItem>My Profile</MenuItem>{" "}
+                {/* Apply custom style to "My Profile" item */}
+                <MenuItem color="black">My Profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
-              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+              {/* Apply custom style to "Logout" item */}
+              <MenuItem color="black" onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </div>
       </Box>
-
+      {/* Drawer Content */}
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
