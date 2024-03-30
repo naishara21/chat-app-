@@ -1,111 +1,175 @@
-import React, { useState, useEffect, useContext } from "react";
 import {
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
-  DrawerBody,
-  Input,
-  Button,
   Box,
-  useDisclosure,
-  Text,
-  Link,
-  Avatar,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Input,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
-  Spinner,
+  MenuItem,
+  MenuList,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import ProfileModal from "./ProfileModal";
+import { Avatar, Link } from "@chakra-ui/react";
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { useHistory } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
-import { Store } from "../../Store";
-import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
+import { useToast } from "@chakra-ui/toast";
+import ChatLoading from "../ChatLoading";
+import UserListItem from "../userAvatar/UserListItem";
 
-const SideDrawer = () => {
+function SideDrawer() {
   const [search, setSearch] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingChat, setLoadingChat] = useState(false);
+
+  const {
+    setSelectedChat,
+    user,
+    notification,
+    setNotification,
+    chats,
+    setChats,
+  } = ChatState();
+
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo } = state;
-  const router = useRouter();
-  const { dispatch } = useContext(Store);
+  const history = useHistory();
 
   const logoutHandler = () => {
-    removeCookie("user");
-    ctxDispatch({ type: "USER_LOGOUT" });
-    dispatch({ type: "USER_LOGOUT" });
-    router.push("/");
+    localStorage.removeItem("userInfo");
+    history.push("/");
   };
 
   const handleSearch = async () => {
     if (!search) {
+      toast({
+        title: "Please Enter something in search",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-left",
+      });
       return;
     }
 
-    setLoading(true);
     try {
-      const { data } = await axios.get(`/api/users?search=${search}`);
-      setSearchResults(data);
+      setLoading(true);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/user?search=${search}`, config);
+
       setLoading(false);
+      setSearchResult(data);
     } catch (error) {
-      setLoading(false);
       toast({
-        title: "Error fetching users",
-        description: error.message,
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
         status: "error",
         duration: 5000,
         isClosable: true,
-        position: "bottom",
+        position: "bottom-left",
       });
     }
   };
 
-  const handleSearchResultClick = (user) => {
-    onClose();
-    router.push(`/chat?id=${user._id}`);
+  const accessChat = async (userId) => {
+    console.log(userId);
+
+    try {
+      setLoadingChat(true);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.post(`/api/chat`, { userId }, config);
+
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      setSelectedChat(data);
+      setLoadingChat(false);
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error fetching the chat",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
   };
 
   return (
     <>
       <Box
-        display="flex"
+        d="flex"
         justifyContent="space-between"
         alignItems="center"
-        bg="teal.500"
+        bg="#67C462"
         color="white"
         w="100%"
         p="5px 10px 5px 10px"
         borderWidth="5px"
       >
-        <Box d="flex" alignItems="center">
-          <Text fontSize="2xl" fontFamily="Work sans">
-            CulturaLang
+        <Text fontSize="2xl" fontFamily="Work sans">
+          CulturaLang
+        </Text>
+        {/* Add Home, Information, and Contact links */}
+        <Link
+          href="/Home"
+          ml={4}
+          color="white"
+          _hover={{ textDecoration: "none" }}
+        >
+          Home
+        </Link>
+        <Link
+          href="/Information.html"
+          ml={4}
+          color="white"
+          _hover={{ textDecoration: "none" }}
+        >
+          Information
+        </Link>
+        <Link
+          href="/frontend\src\App.js"
+          ml={4}
+          color="white"
+          _hover={{ textDecoration: "none" }}
+        >
+          Chat
+        </Link>
+        <Link
+          href="/Contact.htm"
+          ml={4}
+          color="white"
+          _hover={{ textDecoration: "none" }}
+        >
+          Contact
+        </Link>
+        <Button variant="ghost" onClick={onOpen}>
+          <i className="fas fa-search"></i>
+          <Text d={{ base: "none", md: "flex" }} px={4}>
+            Search User
           </Text>
-          <Box ml="4">
-            <Link href="/" color="white">
-              Home
-            </Link>
-          </Box>
-          <Box ml="4">
-            <Link href="/about" color="white">
-              About
-            </Link>
-          </Box>
-          <Box ml="4">
-            <Link href="/contact" color="white">
-              Contact
-            </Link>
-          </Box>
-        </Box>
-
-        <Box d="flex" alignItems="center">
+        </Button>
+        {/* Profile Menu */}
+        <div>
           <Menu>
             <MenuButton
               as={Button}
@@ -115,26 +179,29 @@ const SideDrawer = () => {
               <Avatar
                 size="sm"
                 cursor="pointer"
-                name={userInfo.name}
-                src={userInfo.pic}
+                name={user.name}
+                src={user.pic}
               />
             </MenuButton>
             <MenuList>
-              <ProfileModal user={userInfo}>
-                <MenuItem>My Profile</MenuItem>
+              <ProfileModal user={user}>
+                {/* Apply custom style to "My Profile" item */}
+                <MenuItem color="black">My Profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
-              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+              {/* Apply custom style to "Logout" item */}
+              <MenuItem color="black" onClick={logoutHandler}>
+                Logout
+              </MenuItem>
             </MenuList>
           </Menu>
-        </Box>
+        </div>
       </Box>
-
-      <Drawer placement="left" size="sm" onClose={onClose} isOpen={isOpen}>
+      {/* Drawer Content */}
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Search Users</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
           <DrawerBody>
             <Box d="flex" pb={2}>
               <Input
@@ -146,40 +213,22 @@ const SideDrawer = () => {
               <Button onClick={handleSearch}>Go</Button>
             </Box>
             {loading ? (
-              <Spinner ml="auto" d="flex" />
+              <ChatLoading />
             ) : (
-              searchResults.map((user) => (
-                <Box
+              searchResult?.map((user) => (
+                <UserListItem
                   key={user._id}
-                  onClick={() => handleSearchResultClick(user)}
-                  cursor="pointer"
-                  bg="gray.100"
-                  _hover={{ bg: "gray.200" }}
-                  w="100%"
-                  d="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  px={3}
-                  py={2}
-                  borderRadius="lg"
-                >
-                  <Box>
-                    <Avatar size="sm" src={user.pic} />
-                    <Text fontWeight="bold" ml={2}>
-                      {user.name}
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text>{user.email}</Text>
-                  </Box>
-                </Box>
+                  user={user}
+                  handleFunction={() => accessChat(user._id)}
+                />
               ))
             )}
+            {loadingChat && <Spinner ml="auto" d="flex" />}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
     </>
   );
-};
+}
 
 export default SideDrawer;
