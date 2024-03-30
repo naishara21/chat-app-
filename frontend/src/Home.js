@@ -8,29 +8,17 @@ function Home() {
         <a className="Title" href="#">CULTURA LANG</a>
         <ul className="Menu">
           <li className="MenuItem">
-            <a href="#">Home</a>
+            <a href="Home">Home</a>
           </li>
-          <li className="MenuItem">
-            <div className="Dropdown">
-              <a className="DropdownToggle">Chat</a>
-              <div className="DropdownContent">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                {/* Add more dropdown links as needed */}
-              </div>
-            </div>
+           <li className="MenuItem">
+            <a href="/frontend\src\App.js">Chat</a>
           </li>
-          <li className="MenuItem">
+     <li className="MenuItem">
             <a href="#">Information</a>
           </li>
-          <li className="MenuItem">
-            <div className="Dropdown">
-              <a className="DropdownToggle">Contact</a>
-              <div className="DropdownContent">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                {/* Add more dropdown links as needed */}
-              </div>
+     <li className="MenuItem">
+            <a href="#">Contact</a>
+          </li>
             </div>
           </li>
         </ul>
