@@ -1,28 +1,38 @@
+
+import { Button } from "@chakra-ui/button";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { Input } from "@chakra-ui/input";
+import { Box, Text } from "@chakra-ui/layout";
 import {
-  Box,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Input,
   Menu,
   MenuButton,
   MenuDivider,
   MenuItem,
   MenuList,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { Avatar, Link } from "@chakra-ui/react";
+} from "@chakra-ui/menu";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+} from "@chakra-ui/modal";
+import { Tooltip } from "@chakra-ui/tooltip";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { Avatar } from "@chakra-ui/avatar";
+import { Link } from "@chakra-ui/react"; // Import Link component from Chakra UI
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/toast";
 import ChatLoading from "../ChatLoading";
+import { Spinner } from "@chakra-ui/spinner";
+import ProfileModal from "./ProfileModal";
+import NotificationBadge from "react-notification-badge";
+import { Effect } from "react-notification-badge";
+import { getSender } from "../../config/ChatLogics";
 import UserListItem from "../userAvatar/UserListItem";
+import { ChatState } from "../../Context/ChatProvider";
 
 function SideDrawer() {
   const [search, setSearch] = useState("");
@@ -130,38 +140,10 @@ function SideDrawer() {
           CulturaLang
         </Text>
         {/* Add Home, Information, and Contact links */}
-        <Link
-          href="/Home"
-          ml={4}
-          color="white"
-          _hover={{ textDecoration: "none" }}
-        >
-          Home
-        </Link>
-        <Link
-          href="/Information.html"
-          ml={4}
-          color="white"
-          _hover={{ textDecoration: "none" }}
-        >
-          Information
-        </Link>
-        <Link
-          href="/frontend\src\App.js"
-          ml={4}
-          color="white"
-          _hover={{ textDecoration: "none" }}
-        >
-          Chat
-        </Link>
-        <Link
-          href="/Contact.htm"
-          ml={4}
-          color="white"
-          _hover={{ textDecoration: "none" }}
-        >
-          Contact
-        </Link>
+        <Link href="/Home" ml={4} color="white">Home</Link>
+        <Link href="/Information.html" ml={4} color="white">Information</Link>
+        <Link href="/frontend\src\App.js" ml={4} color="white">Chat</Link>
+        <Link href="/Contact.htm" ml={4} color="white">Contact</Link>
         <Button variant="ghost" onClick={onOpen}>
           <i className="fas fa-search"></i>
           <Text d={{ base: "none", md: "flex" }} px={4}>
@@ -171,11 +153,8 @@ function SideDrawer() {
         {/* Profile Menu */}
         <div>
           <Menu>
-            <MenuButton
-              as={Button}
-              bg="white"
-              rightIcon={<ChevronDownIcon />}
-            >
+            {/* Profile Button */}
+            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
               <Avatar
                 size="sm"
                 cursor="pointer"
@@ -183,6 +162,7 @@ function SideDrawer() {
                 src={user.pic}
               />
             </MenuButton>
+            {/* Profile Menu List */}
             <MenuList>
               <ProfileModal user={user}>
                 {/* Apply custom style to "My Profile" item */}
@@ -190,9 +170,7 @@ function SideDrawer() {
               </ProfileModal>
               <MenuDivider />
               {/* Apply custom style to "Logout" item */}
-              <MenuItem color="black" onClick={logoutHandler}>
-                Logout
-              </MenuItem>
+              <MenuItem color="black" onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </div>
