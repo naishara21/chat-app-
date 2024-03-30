@@ -140,7 +140,7 @@ function SideDrawer() {
           CulturaLang
         </Text>
         {/* Add Home, Information, and Contact links */}
-        <Link href="https://docs.google.com/document/u/1/" ml={4} color="white">Home</Link>
+        <Link href="/Home" ml={4} color="white">Home</Link>
         <Link href="/Information.html" ml={4} color="white">Information</Link>
         <Link href="/frontend\src\App.js" ml={4} color="white">Chat</Link>
         <Link href="/Contact.htm" ml={4} color="white">Contact</Link>
