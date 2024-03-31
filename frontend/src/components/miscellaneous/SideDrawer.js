@@ -1,18 +1,57 @@
+
+
+import { Button } from "@chakra-ui/button";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { Input } from "@chakra-ui/input";
+import { Box, Text } from "@chakra-ui/layout";
+import {
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/menu";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+} from "@chakra-ui/modal";
+import { Tooltip } from "@chakra-ui/tooltip";
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { Avatar } from "@chakra-ui/avatar";
+import { Link } from "@chakra-ui/react"; // Import Link component from Chakra UI
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/toast";
-import { Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay } from "@chakra-ui/modal";
-import { Button, Link, Box, Text, Menu, MenuButton, MenuItem, MenuList, Avatar, MenuDivider, Spinner, Input } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import { useHistory } from "react-router-dom";
+import ChatLoading from "../ChatLoading";
+import { Spinner } from "@chakra-ui/spinner";
+import ProfileModal from "./ProfileModal";
+import NotificationBadge from "react-notification-badge";
+import { Effect } from "react-notification-badge";
+import { getSender } from "../../config/ChatLogics";
+import UserListItem from "../userAvatar/UserListItem";
+import { ChatState } from "../../Context/ChatProvider";
 
-function SideDrawer({ user }) {
+function SideDrawer() {
   const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState(null);
+  const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
 
+  const {
+    setSelectedChat,
+    user,
+    notification,
+    setNotification,
+    chats,
+    setChats,
+  } = ChatState();
+
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const history = useHistory();
 
   const logoutHandler = () => {
@@ -23,7 +62,7 @@ function SideDrawer({ user }) {
   const handleSearch = async () => {
     if (!search) {
       toast({
-        title: "Please enter something in search",
+        title: "Please Enter something in search",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -47,8 +86,8 @@ function SideDrawer({ user }) {
       setSearchResult(data);
     } catch (error) {
       toast({
-        title: "Error Occurred!",
-        description: "Failed to load the search results",
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -57,26 +96,26 @@ function SideDrawer({ user }) {
     }
   };
 
-  const accessProfile = async (userId) => {
+  const accessChat = async (userId) => {
+    console.log(userId);
+
     try {
       setLoadingChat(true);
-
-      // Fetch user profile based on userId
       const config = {
         headers: {
+          "Content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
+      const { data } = await axios.post(`/api/chat`, { userId }, config);
 
-      const { data } = await axios.get(`/api/user/${userId}`, config);
-
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      setSelectedChat(data);
       setLoadingChat(false);
-      // Redirect to user profile page or display in modal
-      history.push(`/user/${userId}`);
+      onClose();
     } catch (error) {
-      setLoadingChat(false);
       toast({
-        title: "Error fetching the user profile",
+        title: "Error fetching the chat",
         description: error.message,
         status: "error",
         duration: 5000,
@@ -101,18 +140,21 @@ function SideDrawer({ user }) {
         <Text fontSize="2xl" fontFamily="Work sans">
           CulturaLang
         </Text>
+        {/* Add Home, Information, and Contact links */}
         <Link href="https://6608effdcac64574ad72e488--serene-meringue-71882f.netlify.app/home" ml={4} color="white">Home</Link>
         <Link href="https://6608effdcac64574ad72e488--serene-meringue-71882f.netlify.app/Information.htm" ml={4} color="white">Information</Link>
         <Link href="https://culturalang.onrender.com" ml={4} color="white">Chat</Link>
         <Link href="https://6608effdcac64574ad72e488--serene-meringue-71882f.netlify.app/contact" ml={4} color="white">Contact</Link>
-        <Button variant="ghost" onClick={handleSearch}>
+        <Button variant="ghost" onClick={onOpen}>
           <i className="fas fa-search"></i>
           <Text d={{ base: "none", md: "flex" }} px={4}>
             Search User
           </Text>
         </Button>
+        {/* Profile Menu */}
         <div>
           <Menu>
+            {/* Profile Button */}
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
               <Avatar
                 size="sm"
@@ -121,15 +163,21 @@ function SideDrawer({ user }) {
                 src={user.pic}
               />
             </MenuButton>
+            {/* Profile Menu List */}
             <MenuList>
-              <MenuItem color="black">My Profile</MenuItem>
+              <ProfileModal user={user}>
+                {/* Apply custom style to "My Profile" item */}
+                <MenuItem color="black">My Profile</MenuItem>
+              </ProfileModal>
               <MenuDivider />
+              {/* Apply custom style to "Logout" item */}
               <MenuItem color="black" onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </div>
       </Box>
-      <Drawer placement="left">
+      {/* Drawer Content */}
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
@@ -144,25 +192,17 @@ function SideDrawer({ user }) {
               <Button onClick={handleSearch}>Go</Button>
             </Box>
             {loading ? (
-              <Spinner />
+              <ChatLoading />
             ) : (
-              searchResult ? (
-                <Box>
-                  <Text mb={2}>Search Result:</Text>
-                  <Box onClick={() => accessProfile(searchResult._id)}>
-                    <Avatar
-                      size="sm"
-                      name={searchResult.name}
-                      src={searchResult.pic}
-                    />
-                    <Text ml={2} cursor="pointer">{searchResult.name}</Text>
-                  </Box>
-                </Box>
-              ) : (
-                <Text>No results found</Text>
-              )
+              searchResult?.map((user) => (
+                <UserListItem
+                  key={user._id}
+                  user={user}
+                  handleFunction={() => accessChat(user._id)}
+                />
+              ))
             )}
-            {loadingChat && <Spinner />}
+            {loadingChat && <Spinner ml="auto" d="flex" />}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
