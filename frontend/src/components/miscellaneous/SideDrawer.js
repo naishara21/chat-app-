@@ -141,10 +141,10 @@ function SideDrawer() {
           CulturaLang
         </Text>
         {/* Add Home, Information, and Contact links */}
-        <Link href="https://6608effdcac64574ad72e488--serene-meringue-71882f.netlify.app/home" ml={4} color="white">Home</Link>
-        <Link href="https://6608effdcac64574ad72e488--serene-meringue-71882f.netlify.app/Information.htm" ml={4} color="white">Information</Link>
+        <Link href="https://cultura-lang.netlify.app/home" ml={4} color="white">Home</Link>
+        <Link href="https://cultura-lang.netlify.app/information" ml={4} color="white">Information</Link>
         <Link href="https://culturalang.onrender.com" ml={4} color="white">Chat</Link>
-        <Link href="https://6608effdcac64574ad72e488--serene-meringue-71882f.netlify.app/contact" ml={4} color="white">Contact</Link>
+        <Link href="https://cultura-lang.netlify.app/contact" ml={4} color="white">Contact</Link>
         <Button variant="ghost" onClick={onOpen}>
           <i className="fas fa-search"></i>
           <Text d={{ base: "none", md: "flex" }} px={4}>
