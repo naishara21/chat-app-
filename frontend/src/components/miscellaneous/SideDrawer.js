@@ -184,8 +184,6 @@ function SideDrawer() {
           <DrawerBody>
             <Box d="flex" pb={2}>
               <Input
-                type="text"
-                class="form-control"
                 placeholder="Search by name or email"
                 mr={2}
                 value={search}
