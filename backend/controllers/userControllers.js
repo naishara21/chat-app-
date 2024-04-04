@@ -1,10 +1,38 @@
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModel.js");
 const asyncHandler = require("express-async-handler");
-const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 
-//@description     Get or Search all users
-//@route           GET /api/user?search=
-//@access          Public
+// Authentication middleware
+const protect = asyncHandler(async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
+
+      // Decode token id
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      req.user = await User.findById(decoded.id).select("-password");
+
+      next();
+    } catch (error) {
+      res.status(401);
+      throw new Error("Not authorized, token failed");
+    }
+  }
+
+  if (!token) {
+    res.status(401);
+    throw new Error("Not authorized, no token");
+  }
+});
+
+// Get or Search all users
 const allUsers = asyncHandler(async (req, res) => {
   let users;
   
@@ -21,7 +49,7 @@ const allUsers = asyncHandler(async (req, res) => {
     users = await User.find(keyword).select('name email');
   } else {
     // Retrieve all users
-    users = await User.find().select('-password'); // Exclude password field
+    users = await User.find().select('name email'); // Select only name and email fields
   }
 
   if (users.length === 0) {
@@ -31,17 +59,13 @@ const allUsers = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-//@description     Register new user
-//@route           POST /api/user/
-//@access          Public
+// Register new user
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
 
   if (!name || !email || !password) {
     res.status(400);
-    throw new Error("Please Enter all the Feilds");
+    throw new Error("Please Enter all the Fields");
   }
 
   const userExists = await User.findOne({ email });
@@ -73,9 +97,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@description     Auth the user
-//@route           POST /api/users/login
-//@access          Public
+// Auth the user
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -96,4 +118,4 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { allUsers, registerUser, authUser };
+module.exports = { protect, allUsers, registerUser, authUser };
