@@ -6,6 +6,7 @@ const generateToken = require("../config/generateToken");
 //@route           GET /api/user?search=
 //@access          Public
 const allUsers = asyncHandler(async (req, res) => {
+  console.log("Authenticated user:", req.user); // Check the authenticated user details
   const keyword = req.query.search
     ? {
         $or: [
@@ -15,9 +16,16 @@ const allUsers = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const resusers = await User.find(keyword).select('name email'); // Select only name and email fields
+  console.log("Search keyword:", keyword); // Check the search keyword being used in the query
+  
+  const users = await User.find(keyword).select('name email'); // Select only name and email fields
+  console.log("Users found:", users); // Check the users found after the query
 
-  res.send(resusers);
+  if (users.length === 0) {
+    res.status(404).send("No such users found");
+  } else {
+    res.send(users);
+  }
 });
 
 //@description     Register new user
