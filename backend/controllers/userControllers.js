@@ -24,7 +24,7 @@ const allUsers = asyncHandler(async (req, res) => {
   if (users.length === 0) {
     res.status(404).send("No such users found");
   } else {
-    res.send(users);
+    res.send(allUser);
   }
 });
 
