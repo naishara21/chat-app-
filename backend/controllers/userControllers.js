@@ -6,27 +6,32 @@ const generateToken = require("../config/generateToken");
 //@route           GET /api/user?search=
 //@access          Public
 const allUsers = asyncHandler(async (req, res) => {
-  console.log("Authenticated user:", req.user); // Check the authenticated user details
-  const keyword = req.query.search
-    ? {
-        $or: [
-          { name: { $regex: req.query.search, $options: "i" } },
-          { email: { $regex: req.query.search, $options: "i" } },
-        ],
-      }
-    : {};
-
-  console.log("Search keyword:", keyword); // Check the search keyword being used in the query
+  let users;
   
-  const users = await User.find(keyword).select('name email'); // Select only name and email fields
-  console.log("Users found:", users); // Check the users found after the query
+  // Check if there's a search query
+  if (req.query.search) {
+    const keyword = {
+      $or: [
+        { name: { $regex: req.query.search, $options: "i" } },
+        { email: { $regex: req.query.search, $options: "i" } },
+      ],
+    };
+
+    // Only retrieve name and email for the searched user
+    users = await User.find(keyword).select('name email');
+  } else {
+    // Retrieve all users
+    users = await User.find().select('-password'); // Exclude password field
+  }
 
   if (users.length === 0) {
-    res.status(404).send("No such users found");
+    res.status(404).send("No users found");
   } else {
-    res.send(allUser);
+    res.send(users);
   }
 });
+
+
 
 //@description     Register new user
 //@route           POST /api/user/
