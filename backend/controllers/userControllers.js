@@ -15,9 +15,9 @@ const allUsers = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const users = await User.find(keyword).select('-password'); // Exclude password from the query result
+  const resusers = await User.find(keyword).select('name email'); // Select only name and email fields
 
-  res.send(users);
+  res.send(resusers);
 });
 
 //@description     Register new user
